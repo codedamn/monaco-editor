@@ -1,6 +1,6 @@
 {
   "name": "monaco-editor",
-  "private": true,
+  "private": false,
   "version": "0.20.0",
   "description": "A browser based code editor",
   "author": "Microsoft Corporation",
