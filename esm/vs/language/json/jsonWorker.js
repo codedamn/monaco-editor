@@ -39,6 +39,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 import * as jsonService from './_deps/vscode-json-languageservice/jsonLanguageService.js';
+import { URI } from './_deps/vscode-uri/index.js';
 var defaultSchemaRequestService;
 if (typeof fetch !== 'undefined') {
     defaultSchemaRequestService = function (url) {
@@ -51,6 +52,12 @@ var JSONWorker = /** @class */ (function () {
         this._languageSettings = createData.languageSettings;
         this._languageId = createData.languageId;
         this._languageService = jsonService.getLanguageService({
+            workspaceContext: {
+                resolveRelativePath: function (relativePath, resource) {
+                    var base = resource.substr(0, resource.lastIndexOf('/') + 1);
+                    return resolvePath(base, relativePath);
+                }
+            },
             schemaRequestService: createData.enableSchemaRequest && defaultSchemaRequestService
         });
         this._languageService.configure(this._languageSettings);
@@ -62,7 +69,7 @@ var JSONWorker = /** @class */ (function () {
                 document = this._getTextDocument(uri);
                 if (document) {
                     jsonDocument = this._languageService.parseJSONDocument(document);
-                    return [2 /*return*/, this._languageService.doValidation(document, jsonDocument)];
+                    return [2 /*return*/, this._languageService.doValidation(document, jsonDocument, this._languageSettings)];
                 }
                 return [2 /*return*/, Promise.resolve([])];
             });
@@ -179,6 +186,56 @@ var JSONWorker = /** @class */ (function () {
     return JSONWorker;
 }());
 export { JSONWorker };
+// URI path utilities, will (hopefully) move to vscode-uri
+var Slash = '/'.charCodeAt(0);
+var Dot = '.'.charCodeAt(0);
+function isAbsolutePath(path) {
+    return path.charCodeAt(0) === Slash;
+}
+function resolvePath(uriString, path) {
+    if (isAbsolutePath(path)) {
+        var uri = URI.parse(uriString);
+        var parts = path.split('/');
+        return uri.with({ path: normalizePath(parts) }).toString();
+    }
+    return joinPath(uriString, path);
+}
+function normalizePath(parts) {
+    var newParts = [];
+    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+        var part = parts_1[_i];
+        if (part.length === 0 || (part.length === 1 && part.charCodeAt(0) === Dot)) {
+            // ignore
+        }
+        else if (part.length === 2 && part.charCodeAt(0) === Dot && part.charCodeAt(1) === Dot) {
+            newParts.pop();
+        }
+        else {
+            newParts.push(part);
+        }
+    }
+    if (parts.length > 1 && parts[parts.length - 1].length === 0) {
+        newParts.push('');
+    }
+    var res = newParts.join('/');
+    if (parts[0].length === 0) {
+        res = '/' + res;
+    }
+    return res;
+}
+function joinPath(uriString) {
+    var paths = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        paths[_i - 1] = arguments[_i];
+    }
+    var uri = URI.parse(uriString);
+    var parts = uri.path.split('/');
+    for (var _a = 0, paths_1 = paths; _a < paths_1.length; _a++) {
+        var path = paths_1[_a];
+        parts.push.apply(parts, path.split('/'));
+    }
+    return uri.with({ path: normalizePath(parts) }).toString();
+}
 export function create(ctx, createData) {
     return new JSONWorker(ctx, createData);
 }

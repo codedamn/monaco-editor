@@ -119,7 +119,6 @@ export var language = {
         'event',
         'method',
         'param',
-        'property',
         'public',
         'protected',
         'internal',
@@ -155,16 +154,7 @@ export var language = {
         'when'
     ],
     namespaceFollows: ['namespace', 'using'],
-    parenFollows: [
-        'if',
-        'for',
-        'while',
-        'switch',
-        'foreach',
-        'using',
-        'catch',
-        'when'
-    ],
+    parenFollows: ['if', 'for', 'while', 'switch', 'foreach', 'using', 'catch', 'when'],
     operators: [
         '=',
         '??',

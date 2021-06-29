@@ -55,23 +55,14 @@ export var language = {
                 { token: 'keyword', next: '@keyframedeclaration' }
             ],
             ['[@](page|content|font-face|-moz-document)', { token: 'keyword' }],
-            [
-                '[@](charset|namespace)',
-                { token: 'keyword', next: '@declarationbody' }
-            ],
+            ['[@](charset|namespace)', { token: 'keyword', next: '@declarationbody' }],
             [
                 '(url-prefix)(\\()',
-                [
-                    'attribute.value',
-                    { token: 'delimiter.parenthesis', next: '@urldeclaration' }
-                ]
+                ['attribute.value', { token: 'delimiter.parenthesis', next: '@urldeclaration' }]
             ],
             [
                 '(url)(\\()',
-                [
-                    'attribute.value',
-                    { token: 'delimiter.parenthesis', next: '@urldeclaration' }
-                ]
+                ['attribute.value', { token: 'delimiter.parenthesis', next: '@urldeclaration' }]
             ],
             { include: '@selectorname' },
             ['[\\*]', 'tag'],
@@ -81,11 +72,7 @@ export var language = {
         ],
         selectorbody: [
             { include: '@comments' },
-            [
-                '[*_]?@identifier@ws:(?=(\\s|\\d|[^{;}]*[;}]))',
-                'attribute.name',
-                '@rulevalue'
-            ],
+            ['[*_]?@identifier@ws:(?=(\\s|\\d|[^{;}]*[;}]))', 'attribute.name', '@rulevalue'],
             ['}', { token: 'delimiter.bracket', next: '@pop' }]
         ],
         selectorname: [
@@ -99,21 +86,16 @@ export var language = {
             { include: '@comments' },
             [
                 '(url-prefix)(\\()',
-                [
-                    'attribute.value',
-                    { token: 'delimiter.parenthesis', next: '@urldeclaration' }
-                ]
+                ['attribute.value', { token: 'delimiter.parenthesis', next: '@urldeclaration' }]
             ],
             [
                 '(url)(\\()',
-                [
-                    'attribute.value',
-                    { token: 'delimiter.parenthesis', next: '@urldeclaration' }
-                ]
+                ['attribute.value', { token: 'delimiter.parenthesis', next: '@urldeclaration' }]
             ],
             { include: '@functioninvocation' },
             { include: '@numbers' },
             { include: '@name' },
+            { include: '@strings' },
             ['([<>=\\+\\-\\*\\/\\^\\|\\~,])', 'delimiter'],
             [',', 'delimiter']
         ],
@@ -125,12 +107,8 @@ export var language = {
             [';', 'delimiter', '@pop'],
             ['(?=})', { token: '', next: '@pop' }] // missing semicolon
         ],
-        warndebug: [
-            ['[@](warn|debug)', { token: 'keyword', next: '@declarationbody' }]
-        ],
-        import: [
-            ['[@](import)', { token: 'keyword', next: '@declarationbody' }]
-        ],
+        warndebug: [['[@](warn|debug)', { token: 'keyword', next: '@declarationbody' }]],
+        import: [['[@](import)', { token: 'keyword', next: '@declarationbody' }]],
         urldeclaration: [
             { include: '@strings' },
             ['[^)\r\n]+', 'string'],
@@ -179,10 +157,7 @@ export var language = {
             ['}', { token: 'delimiter.bracket', next: '@pop' }]
         ],
         functioninvocation: [
-            [
-                '@identifier\\(',
-                { token: 'attribute.value', next: '@functionarguments' }
-            ]
+            ['@identifier\\(', { token: 'attribute.value', next: '@functionarguments' }]
         ],
         functionarguments: [
             ['\\$@identifier@ws:', 'attribute.name'],

@@ -89,8 +89,13 @@ var JSONCompletion = /** @class */ (function () {
                     proposed[label] = suggestion;
                     result.items.push(suggestion);
                 }
-                else if (!existing.documentation) {
-                    existing.documentation = suggestion.documentation;
+                else {
+                    if (!existing.documentation) {
+                        existing.documentation = suggestion.documentation;
+                    }
+                    if (!existing.detail) {
+                        existing.detail = suggestion.detail;
+                    }
                 }
             },
             setAsIncomplete: function () {

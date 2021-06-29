@@ -281,10 +281,7 @@ export var language = {
             [/@\s*[a-zA-Z_\$][\w\$]*/, 'annotation'],
             // numbers
             [/(@digits)[eE]([\-+]?(@digits))?[fFdD]?/, 'number.float'],
-            [
-                /(@digits)\.(@digits)([eE][\-+]?(@digits))?[fFdD]?/,
-                'number.float'
-            ],
+            [/(@digits)\.(@digits)([eE][\-+]?(@digits))?[fFdD]?/, 'number.float'],
             [/(@digits)[fFdD]/, 'number.float'],
             [/(@digits)[lL]?/, 'number'],
             // delimiter: after number because of .\d floats

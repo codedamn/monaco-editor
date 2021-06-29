@@ -53,6 +53,7 @@ export var language = {
         'BINARY',
         'BLANKSASNULL',
         'BOTH',
+        'BY',
         'BYTEDICT',
         'BZIP2',
         'CASE',
@@ -795,9 +796,7 @@ export var language = {
             [/''/, 'string'],
             [/'/, { token: 'string', next: '@pop' }]
         ],
-        complexIdentifiers: [
-            [/"/, { token: 'identifier.quote', next: '@quotedIdentifier' }]
-        ],
+        complexIdentifiers: [[/"/, { token: 'identifier.quote', next: '@quotedIdentifier' }]],
         quotedIdentifier: [
             [/[^"]+/, 'identifier'],
             [/""/, 'identifier'],

@@ -16,7 +16,7 @@ var Node = /** @class */ (function () {
     }
     Object.defineProperty(Node.prototype, "attributeNames", {
         get: function () { return this.attributes ? Object.keys(this.attributes) : []; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Node.prototype.isSameTag = function (tagInLowerCase) {
@@ -29,12 +29,12 @@ var Node = /** @class */ (function () {
     };
     Object.defineProperty(Node.prototype, "firstChild", {
         get: function () { return this.children[0]; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(Node.prototype, "lastChild", {
         get: function () { return this.children.length ? this.children[this.children.length - 1] : void 0; },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Node.prototype.findNodeBefore = function (offset) {

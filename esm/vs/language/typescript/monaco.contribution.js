@@ -23,6 +23,8 @@ export var JsxEmit;
     JsxEmit[JsxEmit["Preserve"] = 1] = "Preserve";
     JsxEmit[JsxEmit["React"] = 2] = "React";
     JsxEmit[JsxEmit["ReactNative"] = 3] = "ReactNative";
+    JsxEmit[JsxEmit["ReactJSX"] = 4] = "ReactJSX";
+    JsxEmit[JsxEmit["ReactJSXDev"] = 5] = "ReactJSXDev";
 })(JsxEmit || (JsxEmit = {}));
 export var NewLineKind;
 (function (NewLineKind) {
@@ -54,6 +56,7 @@ var LanguageServiceDefaultsImpl = /** @class */ (function () {
         this._onDidChange = new Emitter();
         this._onDidExtraLibsChange = new Emitter();
         this._extraLibs = Object.create(null);
+        this._removedExtraLibs = Object.create(null);
         this._eagerModelSync = false;
         this.setCompilerOptions(compilerOptions);
         this.setDiagnosticsOptions(diagnosticsOptions);
@@ -93,14 +96,16 @@ var LanguageServiceDefaultsImpl = /** @class */ (function () {
         else {
             filePath = _filePath;
         }
-        if (this._extraLibs[filePath] &&
-            this._extraLibs[filePath].content === content) {
+        if (this._extraLibs[filePath] && this._extraLibs[filePath].content === content) {
             // no-op, there already exists an extra lib with this content
             return {
                 dispose: function () { }
             };
         }
         var myVersion = 1;
+        if (this._removedExtraLibs[filePath]) {
+            myVersion = this._removedExtraLibs[filePath] + 1;
+        }
         if (this._extraLibs[filePath]) {
             myVersion = this._extraLibs[filePath].version + 1;
         }
@@ -119,22 +124,29 @@ var LanguageServiceDefaultsImpl = /** @class */ (function () {
                     return;
                 }
                 delete _this._extraLibs[filePath];
+                _this._removedExtraLibs[filePath] = myVersion;
                 _this._fireOnDidExtraLibsChangeSoon();
             }
         };
     };
     LanguageServiceDefaultsImpl.prototype.setExtraLibs = function (libs) {
+        for (var filePath in this._extraLibs) {
+            this._removedExtraLibs[filePath] = this._extraLibs[filePath].version;
+        }
         // clear out everything
         this._extraLibs = Object.create(null);
         if (libs && libs.length > 0) {
             for (var _i = 0, libs_1 = libs; _i < libs_1.length; _i++) {
                 var lib = libs_1[_i];
-                var filePath = lib.filePath ||
-                    "ts:extralib-" + Math.random().toString(36).substring(2, 15);
+                var filePath = lib.filePath || "ts:extralib-" + Math.random().toString(36).substring(2, 15);
                 var content = lib.content;
+                var myVersion = 1;
+                if (this._removedExtraLibs[filePath]) {
+                    myVersion = this._removedExtraLibs[filePath] + 1;
+                }
                 this._extraLibs[filePath] = {
                     content: content,
-                    version: 1
+                    version: myVersion
                 };
             }
         }
@@ -181,8 +193,8 @@ var LanguageServiceDefaultsImpl = /** @class */ (function () {
     return LanguageServiceDefaultsImpl;
 }());
 export var typescriptVersion = tsversion;
-export var typescriptDefaults = new LanguageServiceDefaultsImpl({ allowNonTsExtensions: true, target: ScriptTarget.Latest }, { noSemanticValidation: false, noSyntaxValidation: false }, {});
-export var javascriptDefaults = new LanguageServiceDefaultsImpl({ allowNonTsExtensions: true, allowJs: true, target: ScriptTarget.Latest }, { noSemanticValidation: true, noSyntaxValidation: false }, {});
+export var typescriptDefaults = new LanguageServiceDefaultsImpl({ allowNonTsExtensions: true, target: ScriptTarget.Latest }, { noSemanticValidation: false, noSyntaxValidation: false, onlyVisible: false }, {});
+export var javascriptDefaults = new LanguageServiceDefaultsImpl({ allowNonTsExtensions: true, allowJs: true, target: ScriptTarget.Latest }, { noSemanticValidation: true, noSyntaxValidation: false, onlyVisible: false }, {});
 export var getTypeScriptWorker = function () {
     return getMode().then(function (mode) { return mode.getTypeScriptWorker(); });
 };

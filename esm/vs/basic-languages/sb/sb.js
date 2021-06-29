@@ -50,20 +50,7 @@ export var language = {
         'While'
     ],
     tagwords: ['If', 'Sub', 'While', 'For'],
-    operators: [
-        '>',
-        '<',
-        '<>',
-        '<=',
-        '>=',
-        'And',
-        'Or',
-        '+',
-        '-',
-        '*',
-        '/',
-        '='
-    ],
+    operators: ['>', '<', '<>', '<=', '>=', 'And', 'Or', '+', '-', '*', '/', '='],
     // we include these common regular expressions
     identifier: /[a-zA-Z_][\w]*/,
     symbols: /[=><:+\-*\/%\.,]+/,

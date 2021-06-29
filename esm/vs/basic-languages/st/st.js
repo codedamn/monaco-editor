@@ -369,14 +369,8 @@ export var language = {
             { include: '@whitespace' },
             [/[{}()\[\]]/, '@brackets'],
             [/"([^"\\]|\\.)*$/, 'string.invalid'],
-            [
-                /"/,
-                { token: 'string.quote', bracket: '@open', next: '@string_dq' }
-            ],
-            [
-                /'/,
-                { token: 'string.quote', bracket: '@open', next: '@string_sq' }
-            ],
+            [/"/, { token: 'string.quote', bracket: '@open', next: '@string_dq' }],
+            [/'/, { token: 'string.quote', bracket: '@open', next: '@string_sq' }],
             [/'[^\\']'/, 'string'],
             [/(')(@escapes)(')/, ['string', 'string.escape', 'string']],
             [/'/, 'string.invalid']

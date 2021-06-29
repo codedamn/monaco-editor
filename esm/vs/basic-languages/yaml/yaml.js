@@ -31,18 +31,7 @@ export var language = {
         { token: 'delimiter.bracket', open: '{', close: '}' },
         { token: 'delimiter.square', open: '[', close: ']' }
     ],
-    keywords: [
-        'true',
-        'True',
-        'TRUE',
-        'false',
-        'False',
-        'FALSE',
-        'null',
-        'Null',
-        'Null',
-        '~'
-    ],
+    keywords: ['true', 'True', 'TRUE', 'false', 'False', 'FALSE', 'null', 'Null', 'Null', '~'],
     numberInteger: /(?:0|[+-]?[0-9]+)/,
     numberFloat: /(?:0|[+-]?[0-9]+)(?:\.[0-9]+)?(?:e[-+][1-9][0-9]*)?/,
     numberOctal: /0o[0-7]+/,
@@ -75,14 +64,11 @@ export var language = {
             [/@numberNaN(?![ \t]*\S+)/, 'number.nan'],
             [/@numberDate(?![ \t]*\S+)/, 'number.date'],
             // Key:Value pair
-            [
-                /(".*?"|'.*?'|.*?)([ \t]*)(:)( |$)/,
-                ['type', 'white', 'operators', 'white']
-            ],
+            [/(".*?"|'.*?'|.*?)([ \t]*)(:)( |$)/, ['type', 'white', 'operators', 'white']],
             { include: '@flowScalars' },
             // String nodes
             [
-                /.+$/,
+                /[^#]+/,
                 {
                     cases: {
                         '@keywords': 'keyword',

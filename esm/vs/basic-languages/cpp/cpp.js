@@ -270,10 +270,7 @@ export var language = {
     tokenizer: {
         root: [
             // C++ 11 Raw String
-            [
-                /@encoding?R\"(?:([^ ()\\\t]*))\(/,
-                { token: 'string.raw.begin', next: '@raw.$1' }
-            ],
+            [/@encoding?R\"(?:([^ ()\\\t]*))\(/, { token: 'string.raw.begin', next: '@raw.$1' }],
             // identifiers and keywords
             [
                 /[a-zA-Z_]\w*/,
@@ -284,16 +281,16 @@ export var language = {
                     }
                 }
             ],
+            // The preprocessor checks must be before whitespace as they check /^\s*#/ which
+            // otherwise fails to match later after other whitespace has been removed.
+            // Inclusion
+            [/^\s*#\s*include/, { token: 'keyword.directive.include', next: '@include' }],
+            // Preprocessor directive
+            [/^\s*#\s*\w+/, 'keyword.directive'],
             // whitespace
             { include: '@whitespace' },
             // [[ attributes ]].
-            [/\[\[.*\]\]/, 'annotation'],
-            [
-                /^\s*#include/,
-                { token: 'keyword.directive.include', next: '@include' }
-            ],
-            // Preprocessor directive
-            [/^\s*#\s*\w+/, 'keyword'],
+            [/\[\s*\[/, { token: 'annotation', next: '@annotation' }],
             // delimiters and operators
             [/[{}()\[\]]/, '@brackets'],
             [/[<>](?!@symbols)/, '@brackets'],
@@ -358,16 +355,19 @@ export var language = {
                             'string.raw.end',
                             { token: 'string.raw.end', next: '@pop' }
                         ],
-                        '@default': [
-                            'string.raw',
-                            'string.raw',
-                            'string.raw',
-                            'string.raw'
-                        ]
+                        '@default': ['string.raw', 'string.raw', 'string.raw', 'string.raw']
                     }
                 }
             ],
             [/.*/, 'string.raw']
+        ],
+        annotation: [
+            { include: '@whitespace' },
+            [/using|alignas/, 'keyword'],
+            [/[a-zA-Z0-9_]+/, 'annotation'],
+            [/[,:]/, 'delimiter'],
+            [/[()]/, '@brackets'],
+            [/\]\s*\]/, { token: 'annotation', next: '@pop' }]
         ],
         include: [
             [

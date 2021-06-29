@@ -58,14 +58,8 @@ export var language = {
                 { token: 'keyword', next: '@keyframedeclaration' }
             ],
             ['[@](page|content|font-face|-moz-document)', { token: 'keyword' }],
-            [
-                '[@](charset|namespace)',
-                { token: 'keyword', next: '@declarationbody' }
-            ],
-            [
-                '[@](function)',
-                { token: 'keyword', next: '@functiondeclaration' }
-            ],
+            ['[@](charset|namespace)', { token: 'keyword', next: '@declarationbody' }],
+            ['[@](function)', { token: 'keyword', next: '@functiondeclaration' }],
             ['[@](mixin)', { token: 'keyword', next: '@mixindeclaration' }],
             ['url(\\-prefix)?\\(', { token: 'meta', next: '@urldeclaration' }],
             { include: '@controlstatement' },
@@ -76,11 +70,7 @@ export var language = {
             ['{', { token: 'delimiter.curly', next: '@selectorbody' }]
         ],
         selectorbody: [
-            [
-                '[*_]?@identifier@ws:(?=(\\s|\\d|[^{;}]*[;}]))',
-                'attribute.name',
-                '@rulevalue'
-            ],
+            ['[*_]?@identifier@ws:(?=(\\s|\\d|[^{;}]*[;}]))', 'attribute.name', '@rulevalue'],
             { include: '@selector' },
             ['[@](extend)', { token: 'keyword', next: '@extendbody' }],
             ['[@](return)', { token: 'keyword', next: '@declarationbody' }],
@@ -106,10 +96,7 @@ export var language = {
             ['([<>=\\+\\-\\*\\/\\^\\|\\~,])', 'operator'],
             [',', 'delimiter'],
             ['!default', 'literal'],
-            [
-                '\\(',
-                { token: 'delimiter.parenthesis', next: '@parenthizedterm' }
-            ]
+            ['\\(', { token: 'delimiter.parenthesis', next: '@parenthizedterm' }]
         ],
         rulevalue: [
             { include: '@term' },
@@ -123,12 +110,8 @@ export var language = {
             { include: '@comments' },
             ['}', { token: 'delimiter.curly', next: '@pop' }]
         ],
-        warndebug: [
-            ['[@](warn|debug)', { token: 'keyword', next: '@declarationbody' }]
-        ],
-        import: [
-            ['[@](import)', { token: 'keyword', next: '@declarationbody' }]
-        ],
+        warndebug: [['[@](warn|debug)', { token: 'keyword', next: '@declarationbody' }]],
+        import: [['[@](import)', { token: 'keyword', next: '@declarationbody' }]],
         variabledeclaration: [
             // sass variables
             ['\\$@identifier@ws:', 'variable.decl', '@declarationbody']
@@ -173,10 +156,7 @@ export var language = {
         ],
         name: [['@identifier', 'attribute.value']],
         numbers: [
-            [
-                '(\\d*\\.)?\\d+([eE][\\-+]?\\d+)?',
-                { token: 'number', next: '@units' }
-            ],
+            ['(\\d*\\.)?\\d+([eE][\\-+]?\\d+)?', { token: 'number', next: '@units' }],
             ['#[0-9a-fA-F_]+(?!\\w)', 'number.hex']
         ],
         units: [
@@ -187,18 +167,12 @@ export var language = {
             ]
         ],
         functiondeclaration: [
-            [
-                '@identifier@ws\\(',
-                { token: 'meta', next: '@parameterdeclaration' }
-            ],
+            ['@identifier@ws\\(', { token: 'meta', next: '@parameterdeclaration' }],
             ['{', { token: 'delimiter.curly', switchTo: '@functionbody' }]
         ],
         mixindeclaration: [
             // mixin with parameters
-            [
-                '@identifier@ws\\(',
-                { token: 'meta', next: '@parameterdeclaration' }
-            ],
+            ['@identifier@ws\\(', { token: 'meta', next: '@parameterdeclaration' }],
             // mixin without parameters
             ['@identifier', 'meta'],
             ['{', { token: 'delimiter.curly', switchTo: '@selectorbody' }]
@@ -245,9 +219,7 @@ export var language = {
             [';', 'delimiter'],
             ['}', { token: 'delimiter.curly', next: '@pop' }]
         ],
-        functioninvocation: [
-            ['@identifier\\(', { token: 'meta', next: '@functionarguments' }]
-        ],
+        functioninvocation: [['@identifier\\(', { token: 'meta', next: '@functionarguments' }]],
         functionarguments: [
             ['\\$@identifier@ws:', 'attribute.name'],
             ['[,]', 'delimiter'],
@@ -255,10 +227,7 @@ export var language = {
             ['\\)', { token: 'meta', next: '@pop' }]
         ],
         strings: [
-            [
-                '~?"',
-                { token: 'string.delimiter', next: '@stringenddoublequote' }
-            ],
+            ['~?"', { token: 'string.delimiter', next: '@stringenddoublequote' }],
             ["~?'", { token: 'string.delimiter', next: '@stringendquote' }]
         ],
         stringenddoublequote: [

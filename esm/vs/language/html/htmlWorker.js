@@ -2,6 +2,17 @@
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -44,16 +55,16 @@ var HTMLWorker = /** @class */ (function () {
         this._ctx = ctx;
         this._languageSettings = createData.languageSettings;
         this._languageId = createData.languageId;
-        this._languageService = htmlService.getLanguageService();
+        var data = this._languageSettings.data;
+        var useDefaultDataProvider = data === null || data === void 0 ? void 0 : data.useDefaultDataProvider;
+        var customDataProviders = [];
+        if (data === null || data === void 0 ? void 0 : data.dataProviders) {
+            for (var id in data.dataProviders) {
+                customDataProviders.push(htmlService.newHTMLDataProvider(id, data.dataProviders[id]));
+            }
+        }
+        this._languageService = htmlService.getLanguageService({ useDefaultDataProvider: useDefaultDataProvider, customDataProviders: customDataProviders });
     }
-    HTMLWorker.prototype.doValidation = function (uri) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                // not yet suported
-                return [2 /*return*/, Promise.resolve([])];
-            });
-        });
-    };
     HTMLWorker.prototype.doComplete = function (uri, position) {
         return __awaiter(this, void 0, void 0, function () {
             var document, htmlDocument;
@@ -66,10 +77,11 @@ var HTMLWorker = /** @class */ (function () {
     };
     HTMLWorker.prototype.format = function (uri, range, options) {
         return __awaiter(this, void 0, void 0, function () {
-            var document, textEdits;
+            var document, formattingOptions, textEdits;
             return __generator(this, function (_a) {
                 document = this._getTextDocument(uri);
-                textEdits = this._languageService.format(document, range, this._languageSettings && this._languageSettings.format);
+                formattingOptions = __assign(__assign({}, this._languageSettings.format), options);
+                textEdits = this._languageService.format(document, range, formattingOptions);
                 return [2 /*return*/, Promise.resolve(textEdits)];
             });
         });

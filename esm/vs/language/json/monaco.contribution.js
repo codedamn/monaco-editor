@@ -53,7 +53,11 @@ var diagnosticDefault = {
     validate: true,
     allowComments: true,
     schemas: [],
-    enableSchemaRequest: false
+    enableSchemaRequest: false,
+    schemaRequest: 'warning',
+    schemaValidation: 'warning',
+    comments: 'error',
+    trailingCommas: 'error'
 };
 var modeConfigurationDefault = {
     documentFormattingEdits: true,
@@ -76,15 +80,7 @@ function getMode() {
 }
 languages.register({
     id: 'json',
-    extensions: [
-        '.json',
-        '.bowerrc',
-        '.jshintrc',
-        '.jscsrc',
-        '.eslintrc',
-        '.babelrc',
-        '.har'
-    ],
+    extensions: ['.json', '.bowerrc', '.jshintrc', '.jscsrc', '.eslintrc', '.babelrc', '.har'],
     aliases: ['JSON', 'json'],
     mimetypes: ['application/json']
 });

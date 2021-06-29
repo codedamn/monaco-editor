@@ -140,6 +140,10 @@ function toRange(range) {
     }
     return new Range(range.start.line + 1, range.start.character + 1, range.end.line + 1, range.end.character + 1);
 }
+function isInsertReplaceEdit(edit) {
+    return (typeof edit.insert !== 'undefined' &&
+        typeof edit.replace !== 'undefined');
+}
 function toCompletionItemKind(kind) {
     var mItemKind = languages.CompletionItemKind;
     switch (kind) {
@@ -268,15 +272,22 @@ var CompletionAdapter = /** @class */ (function () {
                     kind: toCompletionItemKind(entry.kind)
                 };
                 if (entry.textEdit) {
-                    item.range = toRange(entry.textEdit.range);
+                    if (isInsertReplaceEdit(entry.textEdit)) {
+                        item.range = {
+                            insert: toRange(entry.textEdit.insert),
+                            replace: toRange(entry.textEdit.replace)
+                        };
+                    }
+                    else {
+                        item.range = toRange(entry.textEdit.range);
+                    }
                     item.insertText = entry.textEdit.newText;
                 }
                 if (entry.additionalTextEdits) {
                     item.additionalTextEdits = entry.additionalTextEdits.map(toTextEdit);
                 }
                 if (entry.insertTextFormat === jsonService.InsertTextFormat.Snippet) {
-                    item.insertTextRules =
-                        languages.CompletionItemInsertTextRule.InsertAsSnippet;
+                    item.insertTextRules = languages.CompletionItemInsertTextRule.InsertAsSnippet;
                 }
                 return item;
             });
@@ -557,9 +568,7 @@ var SelectionRangeAdapter = /** @class */ (function () {
     SelectionRangeAdapter.prototype.provideSelectionRanges = function (model, positions, token) {
         var resource = model.uri;
         return this._worker(resource)
-            .then(function (worker) {
-            return worker.getSelectionRanges(resource.toString(), positions.map(fromPosition));
-        })
+            .then(function (worker) { return worker.getSelectionRanges(resource.toString(), positions.map(fromPosition)); })
             .then(function (selectionRanges) {
             if (!selectionRanges) {
                 return;

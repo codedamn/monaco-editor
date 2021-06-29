@@ -63,10 +63,7 @@ export var language = {
             //line-blocks
             //No rules on it
             //bullet-lists
-            [
-                /^\s*([\*\-+‣•]|[a-zA-Z0-9]+\.|\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+\))\s/,
-                'keyword'
-            ],
+            [/^\s*([\*\-+‣•]|[a-zA-Z0-9]+\.|\([a-zA-Z0-9]+\)|[a-zA-Z0-9]+\))\s/, 'keyword'],
             //literal-blocks
             [/([ ]::)\s*$/, 'keyword', '@blankLineOfLiteralBlocks'],
             [/(::)\s*$/, 'keyword', '@blankLineOfLiteralBlocks'],
@@ -87,39 +84,18 @@ export var language = {
             //hyperlink-targets
             [
                 /^(\.\.)(\s+)(_)(@simpleRefName)(:)(\s+)(.*)/,
-                [
-                    { token: '', next: 'hyperlinks' },
-                    '',
-                    '',
-                    'string.link',
-                    '',
-                    '',
-                    'string.link'
-                ]
+                [{ token: '', next: 'hyperlinks' }, '', '', 'string.link', '', '', 'string.link']
             ],
             //anonymous-hyperlinks
             [
                 /^((?:(?:\.\.)(?:\s+))?)(__)(:)(\s+)(.*)/,
-                [
-                    { token: '', next: 'subsequentLines' },
-                    '',
-                    '',
-                    '',
-                    'string.link'
-                ]
+                [{ token: '', next: 'subsequentLines' }, '', '', '', 'string.link']
             ],
             [/^(__\s+)(.+)/, ['', 'string.link']],
             //substitution-definitions
             [
                 /^(\.\.)( \|)([^| ]+[^|]*[^| ]*)(\| )(@simpleRefName)(:: .*)/,
-                [
-                    { token: '', next: 'subsequentLines' },
-                    '',
-                    'string.link',
-                    '',
-                    'keyword',
-                    ''
-                ],
+                [{ token: '', next: 'subsequentLines' }, '', 'string.link', '', 'keyword', ''],
                 '@rawBlocks'
             ],
             [/(\|)([^| ]+[^|]*[^| ]*)(\|_{0,2})/, ['', 'string.link', '']],
@@ -132,10 +108,7 @@ export var language = {
             //hyperlink-references
             [/(@simpleRefName)(_{1,2})/, ['string.link', '']],
             //embedded-uris-and-aliases
-            [
-                /(`)([^<`]+\s+)(<)(.*)(>)(`)(_)/,
-                ['', 'string.link', '', 'string.link', '', '', '']
-            ],
+            [/(`)([^<`]+\s+)(<)(.*)(>)(`)(_)/, ['', 'string.link', '', 'string.link', '', '', '']],
             //emphasis
             [/\*\*([^\\*]|\*(?!\*))+\*\*/, 'strong'],
             [/\*[^*]+\*/, 'emphasis'],
@@ -143,14 +116,8 @@ export var language = {
             [/(``)((?:[^`]|\`(?!`))+)(``)/, ['', 'keyword', '']],
             [/(__\s+)(.+)/, ['', 'keyword']],
             //interpreted-text
-            [
-                /(:)((?:@simpleRefNameWithoutBq)?)(:`)([^`]+)(`)/,
-                ['', 'keyword', '', '', '']
-            ],
-            [
-                /(`)([^`]+)(`:)((?:@simpleRefNameWithoutBq)?)(:)/,
-                ['', '', '', 'keyword', '']
-            ],
+            [/(:)((?:@simpleRefNameWithoutBq)?)(:`)([^`]+)(`)/, ['', 'keyword', '', '', '']],
+            [/(`)([^`]+)(`:)((?:@simpleRefNameWithoutBq)?)(:)/, ['', '', '', 'keyword', '']],
             [/(`)([^`]+)(`)/, ''],
             //inline-internal-targets
             [/(_`)(@phrase)(`)/, ['', 'string.link', '']]
@@ -161,9 +128,7 @@ export var language = {
                 [{ token: '', next: '@subsequentLines' }, 'string.link', '', '']
             ]
         ],
-        citationsReference: [
-            [/(\[)(@citationName)(\]_)/, ['', 'string.link', '']]
-        ],
+        citationsReference: [[/(\[)(@citationName)(\]_)/, ['', 'string.link', '']]],
         footnotes: [
             [
                 /^(\.\.\s+\[)((?:[0-9]+))(\]\s+.*)/,

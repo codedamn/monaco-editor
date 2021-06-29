@@ -88,14 +88,8 @@ export var language = {
                 /(<)((?:[\w\-]+:)?[\w\-]+)(\s*)(\/>)/,
                 ['delimiter.html', 'tag.html', '', 'delimiter.html']
             ],
-            [
-                /(<)(script)/,
-                ['delimiter.html', { token: 'tag.html', next: '@script' }]
-            ],
-            [
-                /(<)(style)/,
-                ['delimiter.html', { token: 'tag.html', next: '@style' }]
-            ],
+            [/(<)(script)/, ['delimiter.html', { token: 'tag.html', next: '@script' }]],
+            [/(<)(style)/, ['delimiter.html', { token: 'tag.html', next: '@style' }]],
             [
                 /(<)((?:[\w\-]+:)?[\w\-]+)/,
                 ['delimiter.html', { token: 'tag.html', next: '@otherTag' }]
@@ -126,11 +120,7 @@ export var language = {
             // transition to ensure we mark its contents as strings.
             [
                 /(verbatim)(\s*)([-~]?%})/,
-                [
-                    'keyword.twig',
-                    '',
-                    { token: 'delimiter.twig', next: '@rawDataState' }
-                ]
+                ['keyword.twig', '', { token: 'delimiter.twig', next: '@rawDataState' }]
             ],
             { include: 'expression' }
         ],
@@ -151,10 +141,7 @@ export var language = {
         /**
          * Variable Tag Handling
          */
-        variableState: [
-            [/[-~]?}}/, 'delimiter.twig', '@pop'],
-            { include: 'expression' }
-        ],
+        variableState: [[/[-~]?}}/, 'delimiter.twig', '@pop'], { include: 'expression' }],
         stringState: [
             // closing double quoted string
             [/"/, 'string.twig', '@pop'],
@@ -203,10 +190,7 @@ export var language = {
             // punctuation
             [/\(|\)|\[|\]|{|}|,/, 'delimiter.twig'],
             // strings
-            [
-                /"([^#"\\]*(?:\\.[^#"\\]*)*)"|\'([^\'\\]*(?:\\.[^\'\\]*)*)\'/,
-                'string.twig'
-            ],
+            [/"([^#"\\]*(?:\\.[^#"\\]*)*)"|\'([^\'\\]*(?:\\.[^\'\\]*)*)\'/, 'string.twig'],
             // opening double quoted string
             [/"/, 'string.twig', '@stringState'],
             // misc syntactic constructs
@@ -256,11 +240,7 @@ export var language = {
             [/[ \t\r\n]+/],
             [
                 /(<\/)(script\s*)(>)/,
-                [
-                    'delimiter.html',
-                    'tag.html',
-                    { token: 'delimiter.html', next: '@pop' }
-                ]
+                ['delimiter.html', 'tag.html', { token: 'delimiter.html', next: '@pop' }]
             ]
         ],
         // After <script ... type
@@ -322,10 +302,7 @@ export var language = {
             [/<\/script\s*>/, { token: '@rematch', next: '@pop' }]
         ],
         scriptEmbedded: [
-            [
-                /<\/script/,
-                { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }
-            ],
+            [/<\/script/, { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }],
             [/[^<]+/, '']
         ],
         // -- END <script> tags handling
@@ -348,11 +325,7 @@ export var language = {
             [/[ \t\r\n]+/],
             [
                 /(<\/)(style\s*)(>)/,
-                [
-                    'delimiter.html',
-                    'tag.html',
-                    { token: 'delimiter.html', next: '@pop' }
-                ]
+                ['delimiter.html', 'tag.html', { token: 'delimiter.html', next: '@pop' }]
             ]
         ],
         // After <style ... type
@@ -414,10 +387,7 @@ export var language = {
             [/<\/style\s*>/, { token: '@rematch', next: '@pop' }]
         ],
         styleEmbedded: [
-            [
-                /<\/style/,
-                { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }
-            ],
+            [/<\/style/, { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }],
             [/[^<]+/, '']
         ]
     }

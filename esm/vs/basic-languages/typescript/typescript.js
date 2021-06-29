@@ -121,6 +121,7 @@ export var language = {
         'private',
         'protected',
         'public',
+        'override',
         'readonly',
         'require',
         'global',
@@ -223,7 +224,7 @@ export var language = {
             { include: '@whitespace' },
             // regular expression: ensure it is terminated before beginning (otherwise it is an opeator)
             [
-                /\/(?=([^\\\/]|\\.)+\/([gimsuy]*)(\s*)(\.|;|,|\)|\]|\}|$))/,
+                /\/(?=([^\\\/]|\\.)+\/([dgimsuy]*)(\s*)(\.|;|,|\)|\]|\}|$))/,
                 { token: 'regexp', bracket: '@open', next: '@regexp' }
             ],
             // delimiters and operators
@@ -275,34 +276,21 @@ export var language = {
         regexp: [
             [
                 /(\{)(\d+(?:,\d*)?)(\})/,
-                [
-                    'regexp.escape.control',
-                    'regexp.escape.control',
-                    'regexp.escape.control'
-                ]
+                ['regexp.escape.control', 'regexp.escape.control', 'regexp.escape.control']
             ],
             [
                 /(\[)(\^?)(?=(?:[^\]\\\/]|\\.)+)/,
-                [
-                    'regexp.escape.control',
-                    { token: 'regexp.escape.control', next: '@regexrange' }
-                ]
+                ['regexp.escape.control', { token: 'regexp.escape.control', next: '@regexrange' }]
             ],
-            [
-                /(\()(\?:|\?=|\?!)/,
-                ['regexp.escape.control', 'regexp.escape.control']
-            ],
+            [/(\()(\?:|\?=|\?!)/, ['regexp.escape.control', 'regexp.escape.control']],
             [/[()]/, 'regexp.escape.control'],
             [/@regexpctl/, 'regexp.escape.control'],
             [/[^\\\/]/, 'regexp'],
             [/@regexpesc/, 'regexp.escape'],
             [/\\\./, 'regexp.invalid'],
             [
-                /(\/)([gimsuy]*)/,
-                [
-                    { token: 'regexp', bracket: '@close', next: '@pop' },
-                    'keyword.other'
-                ]
+                /(\/)([dgimsuy]*)/,
+                [{ token: 'regexp', bracket: '@close', next: '@pop' }, 'keyword.other']
             ]
         ],
         regexrange: [

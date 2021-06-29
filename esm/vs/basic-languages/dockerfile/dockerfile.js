@@ -32,10 +32,7 @@ export var language = {
             { include: '@whitespace' },
             { include: '@comment' },
             [/(ONBUILD)(\s+)/, ['keyword', '']],
-            [
-                /(ENV)(\s+)([\w]+)/,
-                ['keyword', '', { token: 'variable', next: '@arguments' }]
-            ],
+            [/(ENV)(\s+)([\w]+)/, ['keyword', '', { token: 'variable', next: '@arguments' }]],
             [
                 /(FROM|MAINTAINER|RUN|EXPOSE|ENV|ADD|ARG|VOLUME|LABEL|USER|WORKDIR|COPY|CMD|STOPSIGNAL|SHELL|HEALTHCHECK|ENTRYPOINT)/,
                 { token: 'keyword', next: '@arguments' }
@@ -87,6 +84,8 @@ export var language = {
         comment: [[/(^#.*$)/, 'comment', '@popall']],
         // Recognize strings, including those broken across lines with \ (but not without)
         strings: [
+            [/\\'$/, '', '@popall'],
+            [/\\'/, ''],
             [/'$/, 'string', '@popall'],
             [/'/, 'string', '@stringBody'],
             [/"$/, 'string', '@popall'],

@@ -65,56 +65,32 @@ export var language = {
     // The main tokenizer for our languages
     tokenizer: {
         root: [
-            [/@@/],
-            [
-                /@[^@]/,
-                { token: '@rematch', switchTo: '@razorInSimpleState.root' }
-            ],
+            [/@@@@/],
+            [/@[^@]/, { token: '@rematch', switchTo: '@razorInSimpleState.root' }],
             [/<!DOCTYPE/, 'metatag.html', '@doctype'],
             [/<!--/, 'comment.html', '@comment'],
             [/(<)(\w+)(\/>)/, ['delimiter.html', 'tag.html', 'delimiter.html']],
-            [
-                /(<)(script)/,
-                ['delimiter.html', { token: 'tag.html', next: '@script' }]
-            ],
-            [
-                /(<)(style)/,
-                ['delimiter.html', { token: 'tag.html', next: '@style' }]
-            ],
-            [
-                /(<)([:\w]+)/,
-                ['delimiter.html', { token: 'tag.html', next: '@otherTag' }]
-            ],
-            [
-                /(<\/)(\w+)/,
-                ['delimiter.html', { token: 'tag.html', next: '@otherTag' }]
-            ],
+            [/(<)(script)/, ['delimiter.html', { token: 'tag.html', next: '@script' }]],
+            [/(<)(style)/, ['delimiter.html', { token: 'tag.html', next: '@style' }]],
+            [/(<)([:\w]+)/, ['delimiter.html', { token: 'tag.html', next: '@otherTag' }]],
+            [/(<\/)(\w+)/, ['delimiter.html', { token: 'tag.html', next: '@otherTag' }]],
             [/</, 'delimiter.html'],
             [/[ \t\r\n]+/],
             [/[^<@]+/] // text
         ],
         doctype: [
-            [
-                /@[^@]/,
-                { token: '@rematch', switchTo: '@razorInSimpleState.comment' }
-            ],
+            [/@[^@]/, { token: '@rematch', switchTo: '@razorInSimpleState.comment' }],
             [/[^>]+/, 'metatag.content.html'],
             [/>/, 'metatag.html', '@pop']
         ],
         comment: [
-            [
-                /@[^@]/,
-                { token: '@rematch', switchTo: '@razorInSimpleState.comment' }
-            ],
+            [/@[^@]/, { token: '@rematch', switchTo: '@razorInSimpleState.comment' }],
             [/-->/, 'comment.html', '@pop'],
             [/[^-]+/, 'comment.content.html'],
             [/./, 'comment.content.html']
         ],
         otherTag: [
-            [
-                /@[^@]/,
-                { token: '@rematch', switchTo: '@razorInSimpleState.otherTag' }
-            ],
+            [/@[^@]/, { token: '@rematch', switchTo: '@razorInSimpleState.otherTag' }],
             [/\/?>/, 'delimiter.html', '@pop'],
             [/"([^"]*)"/, 'attribute.value'],
             [/'([^']*)'/, 'attribute.value'],
@@ -125,10 +101,7 @@ export var language = {
         // -- BEGIN <script> tags handling
         // After <script
         script: [
-            [
-                /@[^@]/,
-                { token: '@rematch', switchTo: '@razorInSimpleState.script' }
-            ],
+            [/@[^@]/, { token: '@rematch', switchTo: '@razorInSimpleState.script' }],
             [/type/, 'attribute.name', '@scriptAfterType'],
             [/"([^"]*)"/, 'attribute.value'],
             [/'([^']*)'/, 'attribute.value'],
@@ -145,11 +118,7 @@ export var language = {
             [/[ \t\r\n]+/],
             [
                 /(<\/)(script\s*)(>)/,
-                [
-                    'delimiter.html',
-                    'tag.html',
-                    { token: 'delimiter.html', next: '@pop' }
-                ]
+                ['delimiter.html', 'tag.html', { token: 'delimiter.html', next: '@pop' }]
             ]
         ],
         // After <script ... type
@@ -240,19 +209,13 @@ export var language = {
                     nextEmbedded: '@pop'
                 }
             ],
-            [
-                /<\/script/,
-                { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }
-            ]
+            [/<\/script/, { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }]
         ],
         // -- END <script> tags handling
         // -- BEGIN <style> tags handling
         // After <style
         style: [
-            [
-                /@[^@]/,
-                { token: '@rematch', switchTo: '@razorInSimpleState.style' }
-            ],
+            [/@[^@]/, { token: '@rematch', switchTo: '@razorInSimpleState.style' }],
             [/type/, 'attribute.name', '@styleAfterType'],
             [/"([^"]*)"/, 'attribute.value'],
             [/'([^']*)'/, 'attribute.value'],
@@ -269,11 +232,7 @@ export var language = {
             [/[ \t\r\n]+/],
             [
                 /(<\/)(style\s*)(>)/,
-                [
-                    'delimiter.html',
-                    'tag.html',
-                    { token: 'delimiter.html', next: '@pop' }
-                ]
+                ['delimiter.html', 'tag.html', { token: 'delimiter.html', next: '@pop' }]
             ]
         ],
         // After <style ... type
@@ -364,19 +323,13 @@ export var language = {
                     nextEmbedded: '@pop'
                 }
             ],
-            [
-                /<\/style/,
-                { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }
-            ]
+            [/<\/style/, { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }]
         ],
         // -- END <style> tags handling
         razorInSimpleState: [
             [/@\*/, 'comment.cs', '@razorBlockCommentTopLevel'],
             [/@[{(]/, 'metatag.cs', '@razorRootTopLevel'],
-            [
-                /(@)(\s*[\w]+)/,
-                ['metatag.cs', { token: 'identifier.cs', switchTo: '@$S2.$S3' }]
-            ],
+            [/(@)(\s*[\w]+)/, ['metatag.cs', { token: 'identifier.cs', switchTo: '@$S2.$S3' }]],
             [/[})]/, { token: 'metatag.cs', switchTo: '@$S2.$S3' }],
             [/\*@/, { token: 'comment.cs', switchTo: '@$S2.$S3' }]
         ],

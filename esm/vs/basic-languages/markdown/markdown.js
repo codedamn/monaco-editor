@@ -74,10 +74,7 @@ export var language = {
             // code block (4 spaces indent)
             [/^(\t|[ ]{4})[^ ].*$/, 'string'],
             // code block (3 tilde)
-            [
-                /^\s*~~~\s*((?:\w|[\/\-#])+)?\s*$/,
-                { token: 'string', next: '@codeblock' }
-            ],
+            [/^\s*~~~\s*((?:\w|[\/\-#])+)?\s*$/, { token: 'string', next: '@codeblock' }],
             // github style code blocks (with backticks and language)
             [
                 /^\s*```\s*((?:\w|[\/\-#])+).*$/,
@@ -115,10 +112,7 @@ export var language = {
         ],
         // github style code blocks
         codeblockgh: [
-            [
-                /```\s*$/,
-                { token: 'variable.source', next: '@pop', nextEmbedded: '@pop' }
-            ],
+            [/```\s*$/, { token: 'variable.source', next: '@pop', nextEmbedded: '@pop' }],
             [/[^`]+/, 'variable.source']
         ],
         linecontent: [
@@ -133,10 +127,7 @@ export var language = {
             [/`([^\\`]|@escapes)+`/, 'variable'],
             // links
             [/\{+[^}]+\}+/, 'string.target'],
-            [
-                /(!?\[)((?:[^\]\\]|@escapes)*)(\]\([^\)]+\))/,
-                ['string.link', '', 'string.link']
-            ],
+            [/(!?\[)((?:[^\]\\]|@escapes)*)(\]\([^\)]+\))/, ['string.link', '', 'string.link']],
             [/(!?\[)((?:[^\]\\]|@escapes)*)(\])/, 'string.link'],
             // or html
             { include: 'html' }
@@ -226,18 +217,12 @@ export var language = {
         ],
         embeddedStyle: [
             [/[^<]+/, ''],
-            [
-                /<\/style\s*>/,
-                { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }
-            ],
+            [/<\/style\s*>/, { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }],
             [/</, '']
         ],
         embeddedScript: [
             [/[^<]+/, ''],
-            [
-                /<\/script\s*>/,
-                { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }
-            ],
+            [/<\/script\s*>/, { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }],
             [/</, '']
         ]
     }

@@ -76,20 +76,11 @@ export var language = {
         root: [
             [/<!DOCTYPE/, 'metatag', '@doctype'],
             [/<!--/, 'comment', '@comment'],
-            [
-                /(<)((?:[\w\-]+:)?[\w\-]+)(\s*)(\/>)/,
-                ['delimiter', 'tag', '', 'delimiter']
-            ],
+            [/(<)((?:[\w\-]+:)?[\w\-]+)(\s*)(\/>)/, ['delimiter', 'tag', '', 'delimiter']],
             [/(<)(script)/, ['delimiter', { token: 'tag', next: '@script' }]],
             [/(<)(style)/, ['delimiter', { token: 'tag', next: '@style' }]],
-            [
-                /(<)((?:[\w\-]+:)?[\w\-]+)/,
-                ['delimiter', { token: 'tag', next: '@otherTag' }]
-            ],
-            [
-                /(<\/)((?:[\w\-]+:)?[\w\-]+)/,
-                ['delimiter', { token: 'tag', next: '@otherTag' }]
-            ],
+            [/(<)((?:[\w\-]+:)?[\w\-]+)/, ['delimiter', { token: 'tag', next: '@otherTag' }]],
+            [/(<\/)((?:[\w\-]+:)?[\w\-]+)/, ['delimiter', { token: 'tag', next: '@otherTag' }]],
             [/</, 'delimiter'],
             [/[^<]+/] // text
         ],
@@ -127,10 +118,7 @@ export var language = {
                 }
             ],
             [/[ \t\r\n]+/],
-            [
-                /(<\/)(script\s*)(>)/,
-                ['delimiter', 'tag', { token: 'delimiter', next: '@pop' }]
-            ]
+            [/(<\/)(script\s*)(>)/, ['delimiter', 'tag', { token: 'delimiter', next: '@pop' }]]
         ],
         // After <script ... type
         scriptAfterType: [
@@ -191,10 +179,7 @@ export var language = {
             [/<\/script\s*>/, { token: '@rematch', next: '@pop' }]
         ],
         scriptEmbedded: [
-            [
-                /<\/script/,
-                { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }
-            ],
+            [/<\/script/, { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }],
             [/[^<]+/, '']
         ],
         // -- END <script> tags handling
@@ -215,10 +200,7 @@ export var language = {
                 }
             ],
             [/[ \t\r\n]+/],
-            [
-                /(<\/)(style\s*)(>)/,
-                ['delimiter', 'tag', { token: 'delimiter', next: '@pop' }]
-            ]
+            [/(<\/)(style\s*)(>)/, ['delimiter', 'tag', { token: 'delimiter', next: '@pop' }]]
         ],
         // After <style ... type
         styleAfterType: [
@@ -279,10 +261,7 @@ export var language = {
             [/<\/style\s*>/, { token: '@rematch', next: '@pop' }]
         ],
         styleEmbedded: [
-            [
-                /<\/style/,
-                { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }
-            ],
+            [/<\/style/, { token: '@rematch', next: '@pop', nextEmbedded: '@pop' }],
             [/[^<]+/, '']
         ]
         // -- END <style> tags handling

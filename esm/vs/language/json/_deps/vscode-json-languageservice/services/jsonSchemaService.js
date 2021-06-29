@@ -445,9 +445,10 @@ var JSONSchemaService = /** @class */ (function () {
         }
         var seen = Object.create(null);
         var schemas = [];
+        var normalizedResource = normalizeResourceForMatching(resource);
         for (var _i = 0, _a = this.filePatternAssociations; _i < _a.length; _i++) {
             var entry = _a[_i];
-            if (entry.matchesPattern(resource)) {
+            if (entry.matchesPattern(normalizedResource)) {
                 for (var _b = 0, _c = entry.getURIs(); _b < _c.length; _b++) {
                     var schemaId = _c[_b];
                     if (!seen[schemaId]) {
@@ -498,6 +499,15 @@ function normalizeId(id) {
     }
     catch (e) {
         return id;
+    }
+}
+function normalizeResourceForMatching(resource) {
+    // remove querues and fragments, normalize drive capitalization
+    try {
+        return URI.parse(resource).with({ fragment: null, query: null }).toString();
+    }
+    catch (e) {
+        return resource;
     }
 }
 function toDisplayString(url) {

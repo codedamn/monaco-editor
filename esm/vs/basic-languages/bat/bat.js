@@ -46,10 +46,7 @@ export var language = {
     tokenizer: {
         root: [
             [/^(\s*)(rem(?:\s.*|))$/, ['', 'comment']],
-            [
-                /(\@?)(@keywords)(?!\w)/,
-                [{ token: 'keyword' }, { token: 'keyword.$2' }]
-            ],
+            [/(\@?)(@keywords)(?!\w)/, [{ token: 'keyword' }, { token: 'keyword.$2' }]],
             // whitespace
             [/[ \t\r\n]+/, ''],
             // blocks

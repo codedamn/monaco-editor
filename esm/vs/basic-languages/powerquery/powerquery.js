@@ -877,10 +877,7 @@ export var language = {
             { include: '@comments' },
             { include: '@strings' },
             [/[{}()\[\]]/, '@brackets'],
-            [
-                /([=\+<>\-\*&@\?\/!])|([<>]=)|(<>)|(=>)|(\.\.\.)|(\.\.)/,
-                'operators'
-            ],
+            [/([=\+<>\-\*&@\?\/!])|([<>]=)|(<>)|(=>)|(\.\.\.)|(\.\.)/, 'operators'],
             [/[,;]/, 'delimiter']
         ],
         whitespace: [[/\s+/, 'white']],

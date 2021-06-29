@@ -333,10 +333,7 @@ export var language = {
     tokenizer: {
         root: [
             [/(::)\s*|\b(isa)\s+/, 'keyword', '@typeanno'],
-            [
-                /\b(isa)(\s*\(@ident\s*,\s*)/,
-                ['keyword', { token: '', next: '@typeanno' }]
-            ],
+            [/\b(isa)(\s*\(@ident\s*,\s*)/, ['keyword', { token: '', next: '@typeanno' }]],
             [/\b(type|struct)[ \t]+/, 'keyword', '@typeanno'],
             // symbols
             [/^\s*:@ident[!?]?/, 'metatag'],
@@ -384,7 +381,7 @@ export var language = {
             ],
             [/\$\w+/, 'key'],
             [/\$\(/, 'key', '@paste'],
-            [/@@ident/, 'annotation'],
+            [/@@@ident/, 'annotation'],
             // whitespace
             { include: '@whitespace' },
             // characters
@@ -410,10 +407,7 @@ export var language = {
         // type
         typeanno: [
             [/[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*\{/, 'type', '@gen'],
-            [
-                /([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)(\s*<:\s*)/,
-                ['type', 'keyword']
-            ],
+            [/([a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*)(\s*<:\s*)/, ['type', 'keyword']],
             [/[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*/, 'type', '@pop'],
             ['', '', '@pop']
         ],

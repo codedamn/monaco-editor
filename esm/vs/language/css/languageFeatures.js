@@ -68,7 +68,7 @@ var DiagnosticsAdapter = /** @class */ (function () {
             .then(function (diagnostics) {
             var markers = diagnostics.map(function (d) { return toDiagnostics(resource, d); });
             var model = editor.getModel(resource);
-            if (model.getModeId() === languageId) {
+            if (model && model.getModeId() === languageId) {
                 editor.setModelMarkers(model, languageId, markers);
             }
         })
@@ -236,8 +236,7 @@ var CompletionAdapter = /** @class */ (function () {
                     item.additionalTextEdits = entry.additionalTextEdits.map(toTextEdit);
                 }
                 if (entry.insertTextFormat === cssService.InsertTextFormat.Snippet) {
-                    item.insertTextRules =
-                        languages.CompletionItemInsertTextRule.InsertAsSnippet;
+                    item.insertTextRules = languages.CompletionItemInsertTextRule.InsertAsSnippet;
                 }
                 return item;
             });
@@ -251,9 +250,7 @@ var CompletionAdapter = /** @class */ (function () {
 }());
 export { CompletionAdapter };
 function isMarkupContent(thing) {
-    return (thing &&
-        typeof thing === 'object' &&
-        typeof thing.kind === 'string');
+    return (thing && typeof thing === 'object' && typeof thing.kind === 'string');
 }
 function toMarkdownString(entry) {
     if (typeof entry === 'string') {
@@ -590,9 +587,7 @@ var SelectionRangeAdapter = /** @class */ (function () {
     SelectionRangeAdapter.prototype.provideSelectionRanges = function (model, positions, token) {
         var resource = model.uri;
         return this._worker(resource)
-            .then(function (worker) {
-            return worker.getSelectionRanges(resource.toString(), positions.map(fromPosition));
-        })
+            .then(function (worker) { return worker.getSelectionRanges(resource.toString(), positions.map(fromPosition)); })
             .then(function (selectionRanges) {
             if (!selectionRanges) {
                 return;

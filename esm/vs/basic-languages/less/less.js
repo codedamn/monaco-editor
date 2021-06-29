@@ -53,11 +53,7 @@ export var language = {
             { include: '@keyword' },
             { include: '@strings' },
             { include: '@numbers' },
-            [
-                '[*_]?[a-zA-Z\\-\\s]+(?=:.*(;|(\\\\$)))',
-                'attribute.name',
-                '@attribute'
-            ],
+            ['[*_]?[a-zA-Z\\-\\s]+(?=:.*(;|(\\\\$)))', 'attribute.name', '@attribute'],
             ['url(\\-prefix)?\\(', { token: 'tag', next: '@urldeclaration' }],
             ['[{}()\\[\\]]', '@brackets'],
             ['[,:;]', 'delimiter'],
@@ -145,14 +141,8 @@ export var language = {
             ]
         ],
         strings: [
-            [
-                '~?"',
-                { token: 'string.delimiter', next: '@stringsEndDoubleQuote' }
-            ],
-            [
-                "~?'",
-                { token: 'string.delimiter', next: '@stringsEndQuote' }
-            ]
+            ['~?"', { token: 'string.delimiter', next: '@stringsEndDoubleQuote' }],
+            ["~?'", { token: 'string.delimiter', next: '@stringsEndQuote' }]
         ],
         stringsEndDoubleQuote: [
             ['\\\\"', 'string'],

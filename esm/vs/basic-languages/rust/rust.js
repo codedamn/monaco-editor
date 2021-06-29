@@ -38,11 +38,14 @@ export var language = {
     defaultToken: 'invalid',
     keywords: [
         'as',
+        'async',
+        'await',
         'box',
         'break',
         'const',
         'continue',
         'crate',
+        'dyn',
         'else',
         'enum',
         'extern',
@@ -67,6 +70,7 @@ export var language = {
         'super',
         'trait',
         'true',
+        'try',
         'type',
         'unsafe',
         'use',
@@ -289,10 +293,7 @@ export var language = {
                 }
             ],
             [/[{}()\[\]<>]/, '@brackets'],
-            [
-                /@symbols/,
-                { cases: { '@operators': 'operator', '@default': '' } }
-            ]
+            [/@symbols/, { cases: { '@operators': 'operator', '@default': '' } }]
         ],
         whitespace: [
             [/[ \t\r\n]+/, 'white'],
@@ -317,10 +318,7 @@ export var language = {
             //Binary
             [/(0b[0-1_]+)(@intSuffixes)?/, { token: 'number' }],
             //Exponent
-            [
-                /[\d][\d_]*(\.[\d][\d_]*)?[eE][+-][\d_]+(@floatSuffixes)?/,
-                { token: 'number' }
-            ],
+            [/[\d][\d_]*(\.[\d][\d_]*)?[eE][+-][\d_]+(@floatSuffixes)?/, { token: 'number' }],
             //Float
             [/\b(\d\.?[\d_]*)(@floatSuffixes)?\b/, { token: 'number' }],
             //Hexadecimal

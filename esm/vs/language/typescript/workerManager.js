@@ -47,9 +47,7 @@ var WorkerManager = /** @class */ (function () {
         this._defaults = defaults;
         this._worker = null;
         this._client = null;
-        this._configChangeListener = this._defaults.onDidChange(function () {
-            return _this._stopWorker();
-        });
+        this._configChangeListener = this._defaults.onDidChange(function () { return _this._stopWorker(); });
         this._updateExtraLibsToken = 0;
         this._extraLibsChangeListener = this._defaults.onDidExtraLibsChange(function () {
             return _this._updateExtraLibs();

@@ -11,9 +11,7 @@ var WorkerManager = /** @class */ (function () {
         this._worker = null;
         this._idleCheckInterval = window.setInterval(function () { return _this._checkIfIdle(); }, 30 * 1000);
         this._lastUsedTime = 0;
-        this._configChangeListener = this._defaults.onDidChange(function () {
-            return _this._stopWorker();
-        });
+        this._configChangeListener = this._defaults.onDidChange(function () { return _this._stopWorker(); });
     }
     WorkerManager.prototype._stopWorker = function () {
         if (this._worker) {
@@ -45,7 +43,7 @@ var WorkerManager = /** @class */ (function () {
                 label: this._defaults.languageId,
                 // passed in to the create() method
                 createData: {
-                    languageSettings: this._defaults.diagnosticsOptions,
+                    options: this._defaults.options,
                     languageId: this._defaults.languageId
                 }
             });

@@ -132,10 +132,7 @@ export var language = {
         ],
         quoted_identifier: [
             [/[^\\"]+/, 'identifier'],
-            [
-                /"/,
-                { token: 'identifier.quote', bracket: '@close', next: '@pop' }
-            ]
+            [/"/, { token: 'identifier.quote', bracket: '@close', next: '@pop' }]
         ],
         space_identifier_until_period: [
             [':', 'delimiter'],
@@ -154,10 +151,7 @@ export var language = {
         semver: [
             { include: '@whitespace' },
             [':', 'delimiter'],
-            [
-                /\d*\.\d*\.\d*/,
-                { token: 'number.semver', bracket: '@close', next: '@pop' }
-            ]
+            [/\d*\.\d*\.\d*/, { token: 'number.semver', bracket: '@close', next: '@pop' }]
         ],
         whitespace: [[/[ \t\r\n]+/, 'white']]
     }

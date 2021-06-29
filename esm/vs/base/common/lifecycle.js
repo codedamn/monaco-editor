@@ -1,3 +1,4 @@
+import { Iterable } from './iterator.js';
 /**
  * Enables logging of potentially leaked disposables.
  *
@@ -5,75 +6,96 @@
  * another disposable. This tracking is very simple an only works for classes that either
  * extend Disposable or use a DisposableStore. This means there are a lot of false positives.
  */
-var TRACK_DISPOSABLES = false;
-var __is_disposable_tracked__ = '__is_disposable_tracked__';
+const TRACK_DISPOSABLES = false;
+let disposableTracker = null;
+if (TRACK_DISPOSABLES) {
+    const __is_disposable_tracked__ = '__is_disposable_tracked__';
+    disposableTracker = new class {
+        trackDisposable(x) {
+            const stack = new Error('Potentially leaked disposable').stack;
+            setTimeout(() => {
+                if (!x[__is_disposable_tracked__]) {
+                    console.log(stack);
+                }
+            }, 3000);
+        }
+        markTracked(x) {
+            if (x && x !== Disposable.None) {
+                try {
+                    x[__is_disposable_tracked__] = true;
+                }
+                catch (_a) {
+                    // noop
+                }
+            }
+        }
+    };
+}
 function markTracked(x) {
-    if (!TRACK_DISPOSABLES) {
+    if (!disposableTracker) {
         return;
     }
-    if (x && x !== Disposable.None) {
-        try {
-            x[__is_disposable_tracked__] = true;
-        }
-        catch (_a) {
-            // noop
-        }
-    }
+    disposableTracker.markTracked(x);
 }
-function trackDisposable(x) {
-    if (!TRACK_DISPOSABLES) {
+export function trackDisposable(x) {
+    if (!disposableTracker) {
         return x;
     }
-    var stack = new Error('Potentially leaked disposable').stack;
-    setTimeout(function () {
-        if (!x[__is_disposable_tracked__]) {
-            console.log(stack);
-        }
-    }, 3000);
+    disposableTracker.trackDisposable(x);
     return x;
 }
-export function isDisposable(thing) {
-    return typeof thing.dispose === 'function'
-        && thing.dispose.length === 0;
+export class MultiDisposeError extends Error {
+    constructor(errors) {
+        super(`Encountered errors while disposing of store. Errors: [${errors.join(', ')}]`);
+        this.errors = errors;
+    }
 }
-export function dispose(disposables) {
-    if (Array.isArray(disposables)) {
-        disposables.forEach(function (d) {
+export function isDisposable(thing) {
+    return typeof thing.dispose === 'function' && thing.dispose.length === 0;
+}
+export function dispose(arg) {
+    if (Iterable.is(arg)) {
+        let errors = [];
+        for (const d of arg) {
             if (d) {
                 markTracked(d);
-                d.dispose();
+                try {
+                    d.dispose();
+                }
+                catch (e) {
+                    errors.push(e);
+                }
             }
-        });
-        return [];
+        }
+        if (errors.length === 1) {
+            throw errors[0];
+        }
+        else if (errors.length > 1) {
+            throw new MultiDisposeError(errors);
+        }
+        return Array.isArray(arg) ? [] : arg;
     }
-    else if (disposables) {
-        markTracked(disposables);
-        disposables.dispose();
-        return disposables;
-    }
-    else {
-        return undefined;
+    else if (arg) {
+        markTracked(arg);
+        arg.dispose();
+        return arg;
     }
 }
-export function combinedDisposable() {
-    var disposables = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        disposables[_i] = arguments[_i];
-    }
+export function combinedDisposable(...disposables) {
     disposables.forEach(markTracked);
-    return trackDisposable({ dispose: function () { return dispose(disposables); } });
+    return toDisposable(() => dispose(disposables));
 }
 export function toDisposable(fn) {
-    var self = trackDisposable({
-        dispose: function () {
+    const self = trackDisposable({
+        dispose: () => {
             markTracked(self);
             fn();
         }
     });
     return self;
 }
-var DisposableStore = /** @class */ (function () {
-    function DisposableStore() {
+export class DisposableStore {
+    constructor() {
         this._toDispose = new Set();
         this._isDisposed = false;
     }
@@ -82,22 +104,26 @@ var DisposableStore = /** @class */ (function () {
      *
      * Any future disposables added to this object will be disposed of on `add`.
      */
-    DisposableStore.prototype.dispose = function () {
+    dispose() {
         if (this._isDisposed) {
             return;
         }
         markTracked(this);
         this._isDisposed = true;
         this.clear();
-    };
+    }
     /**
      * Dispose of all registered disposables but do not mark this object as disposed.
      */
-    DisposableStore.prototype.clear = function () {
-        this._toDispose.forEach(function (item) { return item.dispose(); });
-        this._toDispose.clear();
-    };
-    DisposableStore.prototype.add = function (t) {
+    clear() {
+        try {
+            dispose(this._toDispose.values());
+        }
+        finally {
+            this._toDispose.clear();
+        }
+    }
+    add(t) {
         if (!t) {
             return t;
         }
@@ -106,84 +132,73 @@ var DisposableStore = /** @class */ (function () {
         }
         markTracked(t);
         if (this._isDisposed) {
-            console.warn(new Error('Trying to add a disposable to a DisposableStore that has already been disposed of. The added object will be leaked!').stack);
+            if (!DisposableStore.DISABLE_DISPOSED_WARNING) {
+                console.warn(new Error('Trying to add a disposable to a DisposableStore that has already been disposed of. The added object will be leaked!').stack);
+            }
         }
         else {
             this._toDispose.add(t);
         }
         return t;
-    };
-    return DisposableStore;
-}());
-export { DisposableStore };
-var Disposable = /** @class */ (function () {
-    function Disposable() {
+    }
+}
+DisposableStore.DISABLE_DISPOSED_WARNING = false;
+export class Disposable {
+    constructor() {
         this._store = new DisposableStore();
         trackDisposable(this);
     }
-    Disposable.prototype.dispose = function () {
+    dispose() {
         markTracked(this);
         this._store.dispose();
-    };
-    Disposable.prototype._register = function (t) {
+    }
+    _register(t) {
         if (t === this) {
             throw new Error('Cannot register a disposable on itself!');
         }
         return this._store.add(t);
-    };
-    Disposable.None = Object.freeze({ dispose: function () { } });
-    return Disposable;
-}());
-export { Disposable };
+    }
+}
+Disposable.None = Object.freeze({ dispose() { } });
 /**
  * Manages the lifecycle of a disposable value that may be changed.
  *
  * This ensures that when the disposable value is changed, the previously held disposable is disposed of. You can
  * also register a `MutableDisposable` on a `Disposable` to ensure it is automatically cleaned up.
  */
-var MutableDisposable = /** @class */ (function () {
-    function MutableDisposable() {
+export class MutableDisposable {
+    constructor() {
         this._isDisposed = false;
         trackDisposable(this);
     }
-    Object.defineProperty(MutableDisposable.prototype, "value", {
-        get: function () {
-            return this._isDisposed ? undefined : this._value;
-        },
-        set: function (value) {
-            if (this._isDisposed || value === this._value) {
-                return;
-            }
-            if (this._value) {
-                this._value.dispose();
-            }
-            if (value) {
-                markTracked(value);
-            }
-            this._value = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    MutableDisposable.prototype.clear = function () {
+    get value() {
+        return this._isDisposed ? undefined : this._value;
+    }
+    set value(value) {
+        var _a;
+        if (this._isDisposed || value === this._value) {
+            return;
+        }
+        (_a = this._value) === null || _a === void 0 ? void 0 : _a.dispose();
+        if (value) {
+            markTracked(value);
+        }
+        this._value = value;
+    }
+    clear() {
         this.value = undefined;
-    };
-    MutableDisposable.prototype.dispose = function () {
+    }
+    dispose() {
+        var _a;
         this._isDisposed = true;
         markTracked(this);
-        if (this._value) {
-            this._value.dispose();
-        }
+        (_a = this._value) === null || _a === void 0 ? void 0 : _a.dispose();
         this._value = undefined;
-    };
-    return MutableDisposable;
-}());
-export { MutableDisposable };
-var ImmortalReference = /** @class */ (function () {
-    function ImmortalReference(object) {
+    }
+}
+export class ImmortalReference {
+    constructor(object) {
         this.object = object;
     }
-    ImmortalReference.prototype.dispose = function () { };
-    return ImmortalReference;
-}());
-export { ImmortalReference };
+    dispose() { }
+}

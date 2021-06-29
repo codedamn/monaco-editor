@@ -151,17 +151,7 @@ export var language = {
         'until',
         'unless'
     ],
-    linedecls: [
-        'def',
-        'case',
-        'do',
-        'begin',
-        'for',
-        'if',
-        'while',
-        'until',
-        'unless'
-    ],
+    linedecls: ['def', 'case', 'do', 'begin', 'for', 'if', 'while', 'until', 'unless'],
     operators: [
         '^',
         '&',
@@ -269,20 +259,14 @@ export var language = {
             [/[A-Z][\w]*[!?=]?/, 'constructor.identifier'],
             [/\$[\w]*/, 'global.constant'],
             [/@[\w]*/, 'namespace.instance.identifier'],
-            [/@@[\w]*/, 'namespace.class.identifier'],
+            [/@@@[\w]*/, 'namespace.class.identifier'],
             // here document
-            [
-                /<<[-~](@heredelim).*/,
-                { token: 'string.heredoc.delimiter', next: '@heredoc.$1' }
-            ],
+            [/<<[-~](@heredelim).*/, { token: 'string.heredoc.delimiter', next: '@heredoc.$1' }],
             [
                 /[ \t\r\n]+<<(@heredelim).*/,
                 { token: 'string.heredoc.delimiter', next: '@heredoc.$1' }
             ],
-            [
-                /^<<(@heredelim).*/,
-                { token: 'string.heredoc.delimiter', next: '@heredoc.$1' }
-            ],
+            [/^<<(@heredelim).*/, { token: 'string.heredoc.delimiter', next: '@heredoc.$1' }],
             // whitespace
             { include: '@whitespace' },
             // strings
@@ -296,10 +280,7 @@ export var language = {
             [/:"/, { token: 'string.s.delim', next: '@dstring.s."' }],
             [/:'/, { token: 'string.s.delim', next: '@sstring.s' }],
             // regular expressions. Lookahead for a (not escaped) closing forwardslash on the same line
-            [
-                /\/(?=(\\\/|[^\/\n])+\/)/,
-                { token: 'regexp.delim', next: '@regexp' }
-            ],
+            [/\/(?=(\\\/|[^\/\n])+\/)/, { token: 'regexp.delim', next: '@regexp' }],
             // delimiters and operators
             [/[{}()\[\]]/, '@brackets'],
             [
@@ -425,7 +406,7 @@ export var language = {
         interpolated: [
             [/\$\w*/, 'global.constant', '@pop'],
             [/@\w*/, 'namespace.class.identifier', '@pop'],
-            [/@@\w*/, 'namespace.instance.identifier', '@pop'],
+            [/@@@\w*/, 'namespace.instance.identifier', '@pop'],
             [
                 /[{]/,
                 {
@@ -483,14 +464,8 @@ export var language = {
                     { token: 'regexp.escape.control', next: '@regexrange' }
                 ]
             ],
-            [
-                /(\()(\?[:=!])/,
-                ['@brackets.regexp.escape.control', 'regexp.escape.control']
-            ],
-            [
-                /\(\?#/,
-                { token: 'regexp.escape.control', next: '@regexpcomment' }
-            ],
+            [/(\()(\?[:=!])/, ['@brackets.regexp.escape.control', 'regexp.escape.control']],
+            [/\(\?#/, { token: 'regexp.escape.control', next: '@regexpcomment' }],
             [/[()]/, '@brackets.regexp.escape.control'],
             [/@regexpctl/, 'regexp.escape.control'],
             [/\\$/, 'regexp.escape'],
@@ -513,54 +488,21 @@ export var language = {
         // % quoted strings
         // A bit repetitive since we need to often special case the kind of ending delimiter
         pstring: [
-            [
-                /%([qws])\(/,
-                { token: 'string.$1.delim', switchTo: '@qstring.$1.(.)' }
-            ],
-            [
-                /%([qws])\[/,
-                { token: 'string.$1.delim', switchTo: '@qstring.$1.[.]' }
-            ],
-            [
-                /%([qws])\{/,
-                { token: 'string.$1.delim', switchTo: '@qstring.$1.{.}' }
-            ],
-            [
-                /%([qws])</,
-                { token: 'string.$1.delim', switchTo: '@qstring.$1.<.>' }
-            ],
-            [
-                /%([qws])(@delim)/,
-                { token: 'string.$1.delim', switchTo: '@qstring.$1.$2.$2' }
-            ],
+            [/%([qws])\(/, { token: 'string.$1.delim', switchTo: '@qstring.$1.(.)' }],
+            [/%([qws])\[/, { token: 'string.$1.delim', switchTo: '@qstring.$1.[.]' }],
+            [/%([qws])\{/, { token: 'string.$1.delim', switchTo: '@qstring.$1.{.}' }],
+            [/%([qws])</, { token: 'string.$1.delim', switchTo: '@qstring.$1.<.>' }],
+            [/%([qws])(@delim)/, { token: 'string.$1.delim', switchTo: '@qstring.$1.$2.$2' }],
             [/%r\(/, { token: 'regexp.delim', switchTo: '@pregexp.(.)' }],
             [/%r\[/, { token: 'regexp.delim', switchTo: '@pregexp.[.]' }],
             [/%r\{/, { token: 'regexp.delim', switchTo: '@pregexp.{.}' }],
             [/%r</, { token: 'regexp.delim', switchTo: '@pregexp.<.>' }],
-            [
-                /%r(@delim)/,
-                { token: 'regexp.delim', switchTo: '@pregexp.$1.$1' }
-            ],
-            [
-                /%(x|W|Q?)\(/,
-                { token: 'string.$1.delim', switchTo: '@qqstring.$1.(.)' }
-            ],
-            [
-                /%(x|W|Q?)\[/,
-                { token: 'string.$1.delim', switchTo: '@qqstring.$1.[.]' }
-            ],
-            [
-                /%(x|W|Q?)\{/,
-                { token: 'string.$1.delim', switchTo: '@qqstring.$1.{.}' }
-            ],
-            [
-                /%(x|W|Q?)</,
-                { token: 'string.$1.delim', switchTo: '@qqstring.$1.<.>' }
-            ],
-            [
-                /%(x|W|Q?)(@delim)/,
-                { token: 'string.$1.delim', switchTo: '@qqstring.$1.$2.$2' }
-            ],
+            [/%r(@delim)/, { token: 'regexp.delim', switchTo: '@pregexp.$1.$1' }],
+            [/%(x|W|Q?)\(/, { token: 'string.$1.delim', switchTo: '@qqstring.$1.(.)' }],
+            [/%(x|W|Q?)\[/, { token: 'string.$1.delim', switchTo: '@qqstring.$1.[.]' }],
+            [/%(x|W|Q?)\{/, { token: 'string.$1.delim', switchTo: '@qqstring.$1.{.}' }],
+            [/%(x|W|Q?)</, { token: 'string.$1.delim', switchTo: '@qqstring.$1.<.>' }],
+            [/%(x|W|Q?)(@delim)/, { token: 'string.$1.delim', switchTo: '@qqstring.$1.$2.$2' }],
             [/%([rqwsxW]|Q?)./, { token: 'invalid', next: '@pop' }],
             [/./, { token: 'invalid', next: '@pop' }] // recover
         ],
@@ -588,10 +530,7 @@ export var language = {
         //  kind = Q|W|x  (double quote, array, command)
         //  open = open delimiter
         //  close = close delimiter
-        qqstring: [
-            [/#/, 'string.$S2.escape', '@interpolated'],
-            { include: '@qstring' }
-        ],
+        qqstring: [[/#/, 'string.$S2.escape', '@interpolated'], { include: '@qstring' }],
         // whitespace & comments
         whitespace: [
             [/[ \t\r\n]+/, ''],

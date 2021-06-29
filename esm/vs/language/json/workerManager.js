@@ -11,9 +11,7 @@ var WorkerManager = /** @class */ (function () {
         this._worker = null;
         this._idleCheckInterval = setInterval(function () { return _this._checkIfIdle(); }, 30 * 1000);
         this._lastUsedTime = 0;
-        this._configChangeListener = this._defaults.onDidChange(function () {
-            return _this._stopWorker();
-        });
+        this._configChangeListener = this._defaults.onDidChange(function () { return _this._stopWorker(); });
     }
     WorkerManager.prototype._stopWorker = function () {
         if (this._worker) {
@@ -47,8 +45,7 @@ var WorkerManager = /** @class */ (function () {
                 createData: {
                     languageSettings: this._defaults.diagnosticsOptions,
                     languageId: this._defaults.languageId,
-                    enableSchemaRequest: this._defaults.diagnosticsOptions
-                        .enableSchemaRequest
+                    enableSchemaRequest: this._defaults.diagnosticsOptions.enableSchemaRequest
                 }
             });
             this._client = this._worker.getProxy();

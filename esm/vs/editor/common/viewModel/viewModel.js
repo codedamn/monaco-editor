@@ -3,26 +3,64 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 import * as strings from '../../../base/common/strings.js';
-var Viewport = /** @class */ (function () {
-    function Viewport(top, left, width, height) {
+export class Viewport {
+    constructor(top, left, width, height) {
         this.top = top | 0;
         this.left = left | 0;
         this.width = width | 0;
         this.height = height | 0;
     }
-    return Viewport;
-}());
-export { Viewport };
-var MinimapLinesRenderingData = /** @class */ (function () {
-    function MinimapLinesRenderingData(tabSize, data) {
+}
+export class OutputPosition {
+    constructor(outputLineIndex, outputOffset) {
+        this.outputLineIndex = outputLineIndex;
+        this.outputOffset = outputOffset;
+    }
+}
+export class LineBreakData {
+    constructor(breakOffsets, breakOffsetsVisibleColumn, wrappedTextIndentLength) {
+        this.breakOffsets = breakOffsets;
+        this.breakOffsetsVisibleColumn = breakOffsetsVisibleColumn;
+        this.wrappedTextIndentLength = wrappedTextIndentLength;
+    }
+    static getInputOffsetOfOutputPosition(breakOffsets, outputLineIndex, outputOffset) {
+        if (outputLineIndex === 0) {
+            return outputOffset;
+        }
+        else {
+            return breakOffsets[outputLineIndex - 1] + outputOffset;
+        }
+    }
+    static getOutputPositionOfInputOffset(breakOffsets, inputOffset) {
+        let low = 0;
+        let high = breakOffsets.length - 1;
+        let mid = 0;
+        let midStart = 0;
+        while (low <= high) {
+            mid = low + ((high - low) / 2) | 0;
+            const midStop = breakOffsets[mid];
+            midStart = mid > 0 ? breakOffsets[mid - 1] : 0;
+            if (inputOffset < midStart) {
+                high = mid - 1;
+            }
+            else if (inputOffset >= midStop) {
+                low = mid + 1;
+            }
+            else {
+                break;
+            }
+        }
+        return new OutputPosition(mid, inputOffset - midStart);
+    }
+}
+export class MinimapLinesRenderingData {
+    constructor(tabSize, data) {
         this.tabSize = tabSize;
         this.data = data;
     }
-    return MinimapLinesRenderingData;
-}());
-export { MinimapLinesRenderingData };
-var ViewLineData = /** @class */ (function () {
-    function ViewLineData(content, continuesWithWrappedLine, minColumn, maxColumn, startVisibleColumn, tokens) {
+}
+export class ViewLineData {
+    constructor(content, continuesWithWrappedLine, minColumn, maxColumn, startVisibleColumn, tokens) {
         this.content = content;
         this.continuesWithWrappedLine = continuesWithWrappedLine;
         this.minColumn = minColumn;
@@ -30,11 +68,9 @@ var ViewLineData = /** @class */ (function () {
         this.startVisibleColumn = startVisibleColumn;
         this.tokens = tokens;
     }
-    return ViewLineData;
-}());
-export { ViewLineData };
-var ViewLineRenderingData = /** @class */ (function () {
-    function ViewLineRenderingData(minColumn, maxColumn, content, continuesWithWrappedLine, mightContainRTL, mightContainNonBasicASCII, tokens, inlineDecorations, tabSize, startVisibleColumn) {
+}
+export class ViewLineRenderingData {
+    constructor(minColumn, maxColumn, content, continuesWithWrappedLine, mightContainRTL, mightContainNonBasicASCII, tokens, inlineDecorations, tabSize, startVisibleColumn) {
         this.minColumn = minColumn;
         this.maxColumn = maxColumn;
         this.content = content;
@@ -46,35 +82,29 @@ var ViewLineRenderingData = /** @class */ (function () {
         this.tabSize = tabSize;
         this.startVisibleColumn = startVisibleColumn;
     }
-    ViewLineRenderingData.isBasicASCII = function (lineContent, mightContainNonBasicASCII) {
+    static isBasicASCII(lineContent, mightContainNonBasicASCII) {
         if (mightContainNonBasicASCII) {
             return strings.isBasicASCII(lineContent);
         }
         return true;
-    };
-    ViewLineRenderingData.containsRTL = function (lineContent, isBasicASCII, mightContainRTL) {
+    }
+    static containsRTL(lineContent, isBasicASCII, mightContainRTL) {
         if (!isBasicASCII && mightContainRTL) {
             return strings.containsRTL(lineContent);
         }
         return false;
-    };
-    return ViewLineRenderingData;
-}());
-export { ViewLineRenderingData };
-var InlineDecoration = /** @class */ (function () {
-    function InlineDecoration(range, inlineClassName, type) {
+    }
+}
+export class InlineDecoration {
+    constructor(range, inlineClassName, type) {
         this.range = range;
         this.inlineClassName = inlineClassName;
         this.type = type;
     }
-    return InlineDecoration;
-}());
-export { InlineDecoration };
-var ViewModelDecoration = /** @class */ (function () {
-    function ViewModelDecoration(range, options) {
+}
+export class ViewModelDecoration {
+    constructor(range, options) {
         this.range = range;
         this.options = options;
     }
-    return ViewModelDecoration;
-}());
-export { ViewModelDecoration };
+}

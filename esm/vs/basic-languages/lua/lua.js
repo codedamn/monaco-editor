@@ -100,14 +100,8 @@ export var language = {
             // whitespace
             { include: '@whitespace' },
             // keys
-            [
-                /(,)(\s*)([a-zA-Z_]\w*)(\s*)(:)(?!:)/,
-                ['delimiter', '', 'key', '', 'delimiter']
-            ],
-            [
-                /({)(\s*)([a-zA-Z_]\w*)(\s*)(:)(?!:)/,
-                ['@brackets', '', 'key', '', 'delimiter']
-            ],
+            [/(,)(\s*)([a-zA-Z_]\w*)(\s*)(:)(?!:)/, ['delimiter', '', 'key', '', 'delimiter']],
+            [/({)(\s*)([a-zA-Z_]\w*)(\s*)(:)(?!:)/, ['@brackets', '', 'key', '', 'delimiter']],
             // delimiters and operators
             [/[{}()\[\]]/, '@brackets'],
             [
